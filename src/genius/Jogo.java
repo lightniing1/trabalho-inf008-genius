@@ -3,6 +3,7 @@ package genius;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,42 +19,51 @@ public class Jogo{
     private JFrame geniusFrame;
     volatile boolean acabou = true;
     volatile boolean liberado = true;
-
     
     public static void main(String[] args){
-            Jogo game = new Jogo();
-            game.montaJogo();
-            game.Jogadas();
+        ArrayList<Jogador> jogadores = new ArrayList<>();
+        jogadores.add(new Jogador("Victor"));
+        jogadores.add(new Jogador("Pedro"));
+        jogadores.add(new Jogador("Daniel"));
+
+        Jogo game = new Jogo();
+        game.montaJogo();
+
+        for(int i = 0; i < jogadores.size(); i++){
+            game.Jogadas(jogadores.get(i));
+        }
+
+        System.exit(0);
     }
 
 
     public void montaJogo(){	
-            /*Configura a frame e adiciona os botoes*/
+        /*Configura a frame e adiciona os botoes*/
 
-            geniusFrame = new JFrame();
-            geniusFrame.setLayout(new GridLayout(2,2));
-            geniusFrame.setSize(370, 300);
-            geniusFrame.setLocationRelativeTo(null);
-            geniusFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-
-    but1 = new Botao("Conteudo/VermelhoNormal.GIF","Conteudo/VermelhoApertado.GIF","Conteudo/som1.wav");
-    but2 = new Botao("Conteudo/AzulNormal.GIF","Conteudo/AzulApertado.GIF","Conteudo/som2.wav");
-    but3 = new Botao("Conteudo/VerdeNormal.GIF","Conteudo/VerdeApertado.GIF","Conteudo/som3.wav");
-    but4 = new Botao("Conteudo/AmareloNormal.GIF","Conteudo/AmareloApertado.GIF","Conteudo/som4.wav");
-
-    but1.getBotao().addActionListener(new Innerbut1());
-    but2.getBotao().addActionListener(new Innerbut2());
-    but3.getBotao().addActionListener(new Innerbut3());
-    but4.getBotao().addActionListener(new Innerbut4());
-
-    geniusFrame.getContentPane().add(but1.getBotao());
-    geniusFrame.getContentPane().add(but2.getBotao());
-    geniusFrame.getContentPane().add(but3.getBotao());
-    geniusFrame.getContentPane().add(but4.getBotao());	
+        geniusFrame = new JFrame();
+        geniusFrame.setLayout(new GridLayout(2,2));
+        geniusFrame.setSize(370, 300);
+        geniusFrame.setLocationRelativeTo(null);
+        geniusFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-    geniusFrame.setVisible(true);
+        but1 = new Botao("Conteudo/VermelhoNormal.GIF","Conteudo/VermelhoApertado.GIF","Conteudo/som1.wav");
+        but2 = new Botao("Conteudo/AzulNormal.GIF","Conteudo/AzulApertado.GIF","Conteudo/som2.wav");
+        but3 = new Botao("Conteudo/VerdeNormal.GIF","Conteudo/VerdeApertado.GIF","Conteudo/som3.wav");
+        but4 = new Botao("Conteudo/AmareloNormal.GIF","Conteudo/AmareloApertado.GIF","Conteudo/som4.wav");
+
+        but1.getBotao().addActionListener(new Innerbut1());
+        but2.getBotao().addActionListener(new Innerbut2());
+        but3.getBotao().addActionListener(new Innerbut3());
+        but4.getBotao().addActionListener(new Innerbut4());
+
+        geniusFrame.getContentPane().add(but1.getBotao());
+        geniusFrame.getContentPane().add(but2.getBotao());
+        geniusFrame.getContentPane().add(but3.getBotao());
+        geniusFrame.getContentPane().add(but4.getBotao());
+
+
+        geniusFrame.setVisible(true);
 
     }
 
@@ -63,8 +73,7 @@ public class Jogo{
          */	 
 
         int numeroBotao = (int)(Math.random() * 4);
-        		
-                lista1[indice1] = numeroBotao;
+        lista1[indice1] = numeroBotao;
 
 
         for (int z = 0; z <= indice1; z++){//pisca os botoes escolhidos pelo computador ate o momento
@@ -114,14 +123,15 @@ public class Jogo{
 
 
 
-    public void Jogadas(){
+    public void Jogadas(Jogador jogador){
             /*Roda o loop das jogadas*/
 
             //inicializa as variaveis no inicio do jogo
             indice1 = 0;
             indice2 = 0;
             contagem = 0;
-
+            acabou = true;
+            liberado = true;
 
             while(acabou){
                     //vez do COMPUTADOR
@@ -130,7 +140,7 @@ public class Jogo{
                             escolhaPC();
                             indice1 = indice1 + 1;//incrementa a posicao para a proxima rodada    
                             liberado = false;
-                            geniusFrame.setTitle("Sua vez!");
+                            geniusFrame.setTitle("Sua vez, " + jogador.getNome() + " (" + jogador.getPontuacao() + ") ");
                     }
 
                     //vez do JOGADOR
@@ -139,10 +149,11 @@ public class Jogo{
                     	   if (lista2[x] == lista1[x]){
                     		   contagem = 0;
                     		   liberado = true;
+                               jogador.setPontuacao(jogador.getPontuacao() + 1);
                     		   //Se acertou, zera a contagem de botoes apertados e libera o computador para a proxima rodada
                            } else {
                         	   JOptionPane.showMessageDialog(geniusFrame,"Game Over!");
-                        	   System.exit(0);
+                               return;
                            }
                        }
                        indice2 = 0;//indice de jogadas humanas retorna a 0 para a proxima rodada
