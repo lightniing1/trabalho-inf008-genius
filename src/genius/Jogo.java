@@ -3,6 +3,7 @@ package genius;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,6 +27,7 @@ public class Jogo{
         jogadores.add(new Jogador("Pedro"));
         jogadores.add(new Jogador("Daniel"));
 
+        String pontuacao = "fdfdfd";
         Jogo game = new Jogo();
         game.montaJogo();
 
@@ -33,7 +35,17 @@ public class Jogo{
             game.Jogadas(jogadores.get(i));
         }
 
+        game.mostraPontuacaoFinal(jogadores);
         System.exit(0);
+    }
+
+    public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
+        String pontuacaoFinal = "";
+        for(int i = 0; i < jogadores.size(); i++){
+            pontuacaoFinal += jogadores.get(i).getNome() + "\nPontuacao: " + jogadores.get(i).getPontuacao() + "\n\n";
+        }
+
+        JOptionPane.showMessageDialog(geniusFrame, pontuacaoFinal);
     }
 
 
@@ -149,13 +161,14 @@ public class Jogo{
                     	   if (lista2[x] == lista1[x]){
                     		   contagem = 0;
                     		   liberado = true;
-                               jogador.setPontuacao(jogador.getPontuacao() + 1);
                     		   //Se acertou, zera a contagem de botoes apertados e libera o computador para a proxima rodada
                            } else {
                         	   JOptionPane.showMessageDialog(geniusFrame,"Game Over!");
                                return;
                            }
                        }
+
+                       jogador.setPontuacao(jogador.getPontuacao() + 1);
                        indice2 = 0;//indice de jogadas humanas retorna a 0 para a proxima rodada
                     }
             }
