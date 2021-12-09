@@ -17,28 +17,56 @@ public class Jogo{
     private int indice1, indice2;
     private int contagem; //quantidade de botoes apertados em uma rodada
     private JButton butiniciar = new JButton();
-    private JFrame geniusFrame;
+    private static JFrame geniusFrame;
     volatile boolean acabou = true;
     volatile boolean liberado = true;
     
+    ArrayList<Jogador> jogadores = new ArrayList<>();
+    
     public static void main(String[] args){
-        ArrayList<Jogador> jogadores = new ArrayList<>();
-        jogadores.add(new Jogador("Victor"));
-        jogadores.add(new Jogador("Pedro"));
-        jogadores.add(new Jogador("Daniel"));
-
-        String pontuacao = "fdfdfd";
+    	
         Jogo game = new Jogo();
         game.montaJogo();
-
-        for(int i = 0; i < jogadores.size(); i++){
-            game.Jogadas(jogadores.get(i));
+        
+        //Escolha modo de jogo: Normal ou Campeonato
+        game.SelecaoMenu();
+        
+        //Pega o nome do jogador e adiciona
+        game.AdicionaJogador();
+        
+        //Player joga até perder. Ao perder, passa a vez.
+        for(int i = 0; i < game.jogadores.size(); i++){
+            game.Jogadas(game.jogadores.get(i));
         }
 
-        game.mostraPontuacaoFinal(jogadores);
+        game.mostraPontuacaoFinal(game.jogadores);
         System.exit(0);
     }
+    
+    public String SelecaoMenu() { //Talvez seria melhor retornar um integer aqui...
+    	String[] opcoesMenu = {"Normal", "Campeonato"};
+    	
+    	String selecaoMenu = (String) JOptionPane.showInputDialog(geniusFrame, 
+                "Qual modo de jogo deseja jogar?",
+                "Modo de Jogo",
+                JOptionPane.QUESTION_MESSAGE, 
+                null, 
+                opcoesMenu, 
+                opcoesMenu[0]);
+    	
+    	return selecaoMenu;
+    }
+    
+    public void AdicionaJogador() {
+    	Integer NumeroJogador = jogadores.size();
+    	String nome = JOptionPane.showInputDialog(geniusFrame, "Qual o seu nome?", "Nome");
+    	if (nome == null || nome.isEmpty() || nome.equals("Nome")) {
+    		nome = "Jogador" + " " + (NumeroJogador + 1);
+    	}
+        jogadores.add(new Jogador(nome));
+    }
 
+    
     public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
         String pontuacaoFinal = "";
         for(int i = 0; i < jogadores.size(); i++){
@@ -47,7 +75,6 @@ public class Jogo{
 
         JOptionPane.showMessageDialog(geniusFrame, pontuacaoFinal);
     }
-
 
     public void montaJogo(){	
         /*Configura a frame e adiciona os botoes*/
@@ -133,8 +160,6 @@ public class Jogo{
 
     }
 
-
-
     public void Jogadas(Jogador jogador){
             /*Roda o loop das jogadas*/
 
@@ -173,9 +198,6 @@ public class Jogo{
                     }
             }
     }
-
-
-
 
     public class Innerbut1 implements ActionListener{
 
