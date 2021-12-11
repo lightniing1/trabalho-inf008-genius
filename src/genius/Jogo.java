@@ -65,7 +65,6 @@ public class Jogo{
     	}
         jogadores.add(new Jogador(nome));
     }
-
     
     public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
         String pontuacaoFinal = "";
@@ -106,21 +105,30 @@ public class Jogo{
 
     }
 
-    public void escolhaPC(){
+    public void escolhaPC(int dificuldade){
         /*Escolha dos botoes e alocacao de seus numeros no vetor de escolhas do computador.
          *Pisca os botoes contidos no vetor.
          */	 
 
         int numeroBotao = (int)(Math.random() * 4);
         lista1[indice1] = numeroBotao;
-
+        
+        //Velocidade inicial
+        int aperto_inicial = 1000; //Tempo de espera antes de aperta o botão
+        int aperto_final = 1000; //Tempo que o botão fica pressionado
+        
+        //Verifica se dificuldade aumentou
+        if (dificuldade >= 2) {
+        	aperto_inicial = 300;
+        	aperto_final = 300;
+        }
 
         for (int z = 0; z <= indice1; z++){//pisca os botoes escolhidos pelo computador ate o momento
                 if (lista1[z] == 0){ 
                         try{
-                                Thread.sleep(900);
+                                Thread.sleep(aperto_inicial);
                                 but1.apertaBotao();
-                                Thread.sleep(500);
+                                Thread.sleep(aperto_final);
                                 but1.desapertaBotao();
 
                         }catch(Exception e){
@@ -128,9 +136,9 @@ public class Jogo{
                 }
                 if (lista1[z]==1){ 
                         try{
-                                Thread.sleep(900);
+                                Thread.sleep(aperto_inicial);
                                 but2.apertaBotao();
-                                Thread.sleep(500);
+                                Thread.sleep(aperto_final);
                                 but2.desapertaBotao();
 
                         }catch(Exception e){
@@ -138,9 +146,9 @@ public class Jogo{
                 }
                 if (lista1[z]==2){ 
                         try{
-                                Thread.sleep(900);
+                                Thread.sleep(aperto_inicial);
                                 but3.apertaBotao();
-                                Thread.sleep(500);
+                                Thread.sleep(aperto_final);
                                 but3.desapertaBotao();
 
                         }catch(Exception e){
@@ -148,9 +156,9 @@ public class Jogo{
                 }
                 if (lista1[z]==3){ 
                         try{
-                                Thread.sleep(900);
+                                Thread.sleep(aperto_inicial);
                                 but4.apertaBotao();
-                                Thread.sleep(500);
+                                Thread.sleep(aperto_final);
                                 but4.desapertaBotao();
 
                         } catch(Exception e){
@@ -169,12 +177,13 @@ public class Jogo{
             contagem = 0;
             acabou = true;
             liberado = true;
-
+            int dificuldade = 0;
+          
             while(acabou){
                     //vez do COMPUTADOR
                     if (liberado == true){//Se o computador estiver liiberado , faz sua jogada
                             geniusFrame.setTitle("Aguarde....");
-                            escolhaPC();
+                            escolhaPC(dificuldade);
                             indice1 = indice1 + 1;//incrementa a posicao para a proxima rodada    
                             liberado = false;
                             geniusFrame.setTitle("Sua vez, " + jogador.getNome() + " (" + jogador.getPontuacao() + ") ");
@@ -194,6 +203,8 @@ public class Jogo{
                        }
 
                        jogador.setPontuacao(jogador.getPontuacao() + 1);
+                       dificuldade += 1;
+                       //System.out.println("Dificuldade atual: "+dificuldade); 
                        indice2 = 0;//indice de jogadas humanas retorna a 0 para a proxima rodada
                     }
             }
