@@ -86,10 +86,10 @@ public class Jogo{
         geniusFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        but1 = new Botao("Conteudo/VermelhoNormal.GIF","Conteudo/VermelhoApertado.GIF","Conteudo/som1.wav");
-        but2 = new Botao("Conteudo/AzulNormal.GIF","Conteudo/AzulApertado.GIF","Conteudo/som2.wav");
-        but3 = new Botao("Conteudo/VerdeNormal.GIF","Conteudo/VerdeApertado.GIF","Conteudo/som3.wav");
-        but4 = new Botao("Conteudo/AmareloNormal.GIF","Conteudo/AmareloApertado.GIF","Conteudo/som4.wav");
+        but1 = new Botao("Conteudo/VermelhoNormal.GIF","Conteudo/VermelhoApertado.GIF","Conteudo/vermelho.wav");
+        but2 = new Botao("Conteudo/AzulNormal.GIF","Conteudo/AzulApertado.GIF","Conteudo/azul.wav");
+        but3 = new Botao("Conteudo/VerdeNormal.GIF","Conteudo/VerdeApertado.GIF","Conteudo/verde.wav");
+        but4 = new Botao("Conteudo/AmareloNormal.GIF","Conteudo/AmareloApertado.GIF","Conteudo/amarelo.wav");
 
         but1.getBotao().addActionListener(new Innerbut1());
         but2.getBotao().addActionListener(new Innerbut2());
