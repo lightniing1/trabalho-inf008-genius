@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Dictionary;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,6 +28,9 @@ public class Jogo{
     
     public static void main(String[] args){
     	
+    	int nivelDificuldade;
+    	boolean progressaoDificuldade = false;
+    	
         Jogo game = new Jogo();
         game.montaJogo();
         
@@ -34,9 +40,15 @@ public class Jogo{
         //Pega o nome do jogador e adiciona
         game.AdicionaJogador();
         
+        //Dificuldade
+        nivelDificuldade = game.SelecaoDificuldade();
+        if (nivelDificuldade == 0) {
+        	progressaoDificuldade = true;
+        }
+        
         //Player joga até perder. Ao perder, passa a vez.
         for(int i = 0; i < game.jogadores.size(); i++){
-            game.Jogadas(game.jogadores.get(i));
+            game.Jogadas(game.jogadores.get(i), nivelDificuldade, progressaoDificuldade);
         }
 
         game.mostraPontuacaoFinal(game.jogadores);
@@ -57,6 +69,45 @@ public class Jogo{
     	return selecaoMenu;
     }
     
+    public int SelecaoDificuldade() {
+    	//Verificar se um dicionario pode ser melhor aqui
+    	int selecao = 0;
+    	int dificuldade = 0;
+    	String[] opcoesMenuDificuldade = {"Progressao", "Fácil", "Médio", "Difícil"};
+    	
+    	String selecaoMenuDificuldade = (String) JOptionPane.showInputDialog(geniusFrame,
+    			"Selecione a dificuldade",
+    			"Dificuldade",
+    			JOptionPane.QUESTION_MESSAGE,
+    			null,
+    			opcoesMenuDificuldade,
+    			opcoesMenuDificuldade[0]);
+    
+    	
+    	for (int i = 0; i < opcoesMenuDificuldade.length; i++) {
+    		if (opcoesMenuDificuldade[i].equals(selecaoMenuDificuldade)) {
+    			selecao = i;
+    		}
+    	}
+    	
+    	switch (selecao) {
+    		case 0: //Progressivo
+    			dificuldade = 0;
+    			break;
+    		case 1: //Facil
+    			dificuldade = 1;
+    			break;
+    		case 2: //Medio
+    			dificuldade = 5;
+    			break;
+    		case 3: //Dificil
+    			dificuldade = 12;
+    			break;
+    	}
+    	
+    	return dificuldade;
+    }
+    
     public void AdicionaJogador() {
     	Integer NumeroJogador = jogadores.size();
     	String nome = JOptionPane.showInputDialog(geniusFrame, "Qual o seu nome?", "Nome");
@@ -65,6 +116,7 @@ public class Jogo{
     	}
         jogadores.add(new Jogador(nome));
     }
+
     
     public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
         String pontuacaoFinal = "";
@@ -113,22 +165,29 @@ public class Jogo{
         int numeroBotao = (int)(Math.random() * 4);
         lista1[indice1] = numeroBotao;
         
-        //Velocidade inicial
-        int aperto_inicial = 1000; //Tempo de espera antes de aperta o botão
-        int aperto_final = 1000; //Tempo que o botão fica pressionado
+        int tempo_aperta_botao;
+        int tempo_desaperta_botao;
         
-        //Verifica se dificuldade aumentou
-        if (dificuldade >= 2) {
-        	aperto_inicial = 300;
-        	aperto_final = 300;
+        if (dificuldade < 5) {
+        	tempo_aperta_botao = 600;
+            tempo_desaperta_botao = 600;
+            //System.out.println("Dificuldade facil | Dificuldade = " + dificuldade);
+        } else if (dificuldade >= 5 && dificuldade <= 11) {
+        	tempo_aperta_botao = 500;
+        	tempo_desaperta_botao = 400;
+        	//System.out.println("Dificuldade media | Dificuldade = " + dificuldade);
+        } else {
+        	tempo_aperta_botao = 250;
+        	tempo_desaperta_botao = 230;
+        	//System.out.println("Dificuldade dificil | Dificuldade = " + dificuldade);
         }
-
+        
         for (int z = 0; z <= indice1; z++){//pisca os botoes escolhidos pelo computador ate o momento
                 if (lista1[z] == 0){ 
                         try{
-                                Thread.sleep(aperto_inicial);
+                                Thread.sleep(tempo_aperta_botao);
                                 but1.apertaBotao();
-                                Thread.sleep(aperto_final);
+                                Thread.sleep(tempo_desaperta_botao);
                                 but1.desapertaBotao();
 
                         }catch(Exception e){
@@ -136,9 +195,9 @@ public class Jogo{
                 }
                 if (lista1[z]==1){ 
                         try{
-                                Thread.sleep(aperto_inicial);
+                                Thread.sleep(tempo_aperta_botao);
                                 but2.apertaBotao();
-                                Thread.sleep(aperto_final);
+                                Thread.sleep(tempo_desaperta_botao);
                                 but2.desapertaBotao();
 
                         }catch(Exception e){
@@ -146,9 +205,9 @@ public class Jogo{
                 }
                 if (lista1[z]==2){ 
                         try{
-                                Thread.sleep(aperto_inicial);
+                                Thread.sleep(tempo_aperta_botao);
                                 but3.apertaBotao();
-                                Thread.sleep(aperto_final);
+                                Thread.sleep(tempo_desaperta_botao);
                                 but3.desapertaBotao();
 
                         }catch(Exception e){
@@ -156,9 +215,9 @@ public class Jogo{
                 }
                 if (lista1[z]==3){ 
                         try{
-                                Thread.sleep(aperto_inicial);
+                                Thread.sleep(tempo_aperta_botao);
                                 but4.apertaBotao();
-                                Thread.sleep(aperto_final);
+                                Thread.sleep(tempo_desaperta_botao);
                                 but4.desapertaBotao();
 
                         } catch(Exception e){
@@ -168,22 +227,24 @@ public class Jogo{
 
     }
 
-    public void Jogadas(Jogador jogador){
+    public void Jogadas(Jogador jogador, int nivelDificuldade, boolean progressaoDificuldade){
+    	
             /*Roda o loop das jogadas*/
-
             //inicializa as variaveis no inicio do jogo
             indice1 = 0;
             indice2 = 0;
             contagem = 0;
             acabou = true;
             liberado = true;
-            int dificuldade = 0;
-          
+
             while(acabou){
                     //vez do COMPUTADOR
                     if (liberado == true){//Se o computador estiver liiberado , faz sua jogada
                             geniusFrame.setTitle("Aguarde....");
-                            escolhaPC(dificuldade);
+                            try {
+                            	Thread.sleep(1000); //Espera 1 segundo antes do computador iniciar a rodada. Necessario devido a velocidade dos botões aumentar a dificuldade
+                            } catch (InterruptedException e){}
+                            escolhaPC(nivelDificuldade);
                             indice1 = indice1 + 1;//incrementa a posicao para a proxima rodada    
                             liberado = false;
                             geniusFrame.setTitle("Sua vez, " + jogador.getNome() + " (" + jogador.getPontuacao() + ") ");
@@ -203,9 +264,10 @@ public class Jogo{
                        }
 
                        jogador.setPontuacao(jogador.getPontuacao() + 1);
-                       dificuldade += 1;
-                       //System.out.println("Dificuldade atual: "+dificuldade); 
                        indice2 = 0;//indice de jogadas humanas retorna a 0 para a proxima rodada
+                       if (progressaoDificuldade) {
+                    	   nivelDificuldade += 1; //Dificuldade aumenta a cada rodada
+                       }
                     }
             }
     }
