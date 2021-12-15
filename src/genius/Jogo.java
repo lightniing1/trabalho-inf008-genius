@@ -33,12 +33,26 @@ public class Jogo{
     	
         Jogo game = new Jogo();
         game.montaJogo();
-        
+
         //Escolha modo de jogo: Normal ou Campeonato
-        game.SelecaoMenu();
-        
+        String modoJogo = game.SelecaoMenu();
+
+        //Pega o numero de jogadores que irao jogar
+        int numJogadores = game.setNumeroJogadores();
+
+        //No modo campeonato, o numero mínimo de jogadores é 2
+        if(modoJogo.equals("Campeonato") && numJogadores < 2){
+            while(numJogadores < 2){
+                JOptionPane.showMessageDialog(geniusFrame,
+                        "Numero de jogadores deve ser igual ou maior que 2 para o modo campeonato");
+                numJogadores = game.setNumeroJogadores();
+            }
+        }
+
         //Pega o nome do jogador e adiciona
-        game.AdicionaJogador();
+        for(int i = 0; i < numJogadores; i++){
+            game.AdicionaJogador();
+        }
         
         //Dificuldade
         nivelDificuldade = game.SelecaoDificuldade();
@@ -51,7 +65,12 @@ public class Jogo{
             game.Jogadas(game.jogadores.get(i), nivelDificuldade, progressaoDificuldade);
         }
 
-        game.mostraPontuacaoFinal(game.jogadores);
+        if(modoJogo.equals("Campeonato")){
+            game.encerraCampeonato();
+        } else {
+            game.mostraPontuacaoFinal();
+        }
+
         System.exit(0);
     }
     
@@ -107,6 +126,17 @@ public class Jogo{
     	
     	return dificuldade;
     }
+
+    public int setNumeroJogadores() {
+        int numJogadores = 0;
+        while(numJogadores <= 0){
+            String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irão jogar?",
+                    "1");
+            numJogadores = Integer.parseInt(numeroJogadoresStr);
+        }
+
+        return numJogadores;
+    }
     
     public void AdicionaJogador() {
     	Integer NumeroJogador = jogadores.size();
@@ -118,13 +148,44 @@ public class Jogo{
     }
 
     
-    public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
+    public void mostraPontuacaoFinal(){
         String pontuacaoFinal = "";
         for(int i = 0; i < jogadores.size(); i++){
             pontuacaoFinal += jogadores.get(i).getNome() + "\nPontuacao: " + jogadores.get(i).getPontuacao() + "\n\n";
         }
 
         JOptionPane.showMessageDialog(geniusFrame, pontuacaoFinal);
+    }
+
+    public void encerraCampeonato(){
+        int tempoTotalPartida = 0;
+        int totalDeRounds = 0;
+        String estatisticas = ""; //string de estatisticas de cada jogador
+        String vencedor = "";
+        int pontosVencedor = 0;
+
+        for(int i = 0; i < jogadores.size(); i++){
+            estatisticas += jogadores.get(i).getNome() + "\nPontuacao: " + jogadores.get(i).getPontuacao() +
+                    "\nTempo na partida: " + jogadores.get(i).getTempoNaPartida()
+                    + " segundos" + "\nRound em que perdeu: " + (jogadores.get(i).getPontuacao() + 1) + "\n\n";
+
+            if(jogadores.get(i).getPontuacao() > pontosVencedor){
+                pontosVencedor = jogadores.get(i).getPontuacao();
+                vencedor = jogadores.get(i).getNome();
+            }
+
+            //o tempo total de partida é a soma do tempo total de todos os jogadores
+            tempoTotalPartida += jogadores.get(i).getTempoNaPartida();
+            //o numero de rounds jogados por um jogador é igual ao numero de rounds vencidos + 1 (que é onde ele perdeu)
+            totalDeRounds += (jogadores.get(i).getPontuacao() + 1);
+        }
+
+        String geral = ""; //string de informacoes gerais sobre a partida
+        geral += "Vencedor :" + vencedor + "\nNumero de Jogadores: " + jogadores.size() +
+                "\nTempo total de partida: " + tempoTotalPartida + " segundos" + "\nNumero de rounds: " + totalDeRounds;
+
+        JOptionPane.showMessageDialog(geniusFrame, geral);
+        JOptionPane.showMessageDialog(geniusFrame, estatisticas);
     }
 
     public void montaJogo(){	
@@ -236,6 +297,7 @@ public class Jogo{
             contagem = 0;
             acabou = true;
             liberado = true;
+            jogador.comecarContagemTempo();
 
             while(acabou){
                     //vez do COMPUTADOR
@@ -258,6 +320,7 @@ public class Jogo{
                     		   liberado = true;
                     		   //Se acertou, zera a contagem de botoes apertados e libera o computador para a proxima rodada
                            } else {
+                               jogador.pararContagemTempo();
                         	   JOptionPane.showMessageDialog(geniusFrame,"Game Over!");
                                return;
                            }
