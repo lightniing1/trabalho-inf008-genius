@@ -3,6 +3,11 @@ package genius;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -30,15 +35,31 @@ public class Jogo{
     	
     	int nivelDificuldade;
     	boolean progressaoDificuldade = false;
+    	String nomeJogador = " ";
     	
         Jogo game = new Jogo();
         game.montaJogo();
+        game.carregaJogadores();
         
         //Escolha modo de jogo: Normal ou Campeonato
-        game.SelecaoMenu();
-        
+        String modoJogo = game.SelecaoMenu();
+
+        //Pega o numero de jogadores que irao jogar
+        int numJogadores = game.setNumeroJogadores();
+
+        //No modo campeonato, o numero mínimo de jogadores é 2
+        if(modoJogo.equals("Campeonato") && numJogadores < 2){
+            while(numJogadores < 2){
+                JOptionPane.showMessageDialog(geniusFrame,
+                        "Numero de jogadores deve ser igual ou maior que 2 para o modo campeonato");
+                numJogadores = game.setNumeroJogadores();
+            }
+        }
+
         //Pega o nome do jogador e adiciona
-        game.AdicionaJogador();
+        for(int i = 0; i < numJogadores; i++){
+            nomeJogador = game.AdicionaJogador();
+        }
         
         //Dificuldade
         nivelDificuldade = game.SelecaoDificuldade();
@@ -51,7 +72,13 @@ public class Jogo{
             game.Jogadas(game.jogadores.get(i), nivelDificuldade, progressaoDificuldade);
         }
 
-        game.mostraPontuacaoFinal(game.jogadores);
+        if(modoJogo.equals("Campeonato")){
+            game.encerraCampeonato();
+        } else {
+            game.mostraPontuacaoFinal(nomeJogador);
+        }
+        
+        game.salvaJogadores();
         System.exit(0);
     }
     
@@ -65,6 +92,10 @@ public class Jogo{
                 null, 
                 opcoesMenu, 
                 opcoesMenu[0]);
+    	
+    	if (selecaoMenu == null) {
+    		selecaoMenu = "Normal";
+    	}
     	
     	return selecaoMenu;
     }
@@ -107,24 +138,122 @@ public class Jogo{
     	
     	return dificuldade;
     }
+
+    public int setNumeroJogadores() {
+        int numJogadores = 0;
+        
+        String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irão jogar?",
+                "1");
+        
+        if (numeroJogadoresStr == null || numeroJogadoresStr.isEmpty()) {
+        	numJogadores = 1;
+        	return numJogadores;
+        }
+        
+        numJogadores = Integer.parseInt(numeroJogadoresStr);
+        return numJogadores;
+    }
     
-    public void AdicionaJogador() {
+    public String AdicionaJogador() {
     	Integer NumeroJogador = jogadores.size();
     	String nome = JOptionPane.showInputDialog(geniusFrame, "Qual o seu nome?", "Nome");
+    	
     	if (nome == null || nome.isEmpty() || nome.equals("Nome")) {
     		nome = "Jogador" + " " + (NumeroJogador + 1);
     	}
-        jogadores.add(new Jogador(nome));
+    	
+    	if (jogadores.contains(nome)) {
+    		return nome;
+    	} else {
+    		jogadores.add(new Jogador(nome));
+            return nome;
+    	}
     }
 
     
-    public void mostraPontuacaoFinal(ArrayList<Jogador> jogadores){
+    public void mostraPontuacaoFinal(String nomeJogador){
         String pontuacaoFinal = "";
+        
         for(int i = 0; i < jogadores.size(); i++){
-            pontuacaoFinal += jogadores.get(i).getNome() + "\nPontuacao: " + jogadores.get(i).getPontuacao() + "\n\n";
+        	if (jogadores.get(i).getNome().equals(nomeJogador)) {
+	            pontuacaoFinal += jogadores.get(i).getNome() + 
+	            				"\nPontuacao: " + jogadores.get(i).getPontuacao() +
+	            				"\nPontuacao máxima: " + jogadores.get(i).getPontuacaoMaxima() + "\n\n";
+        	}
         }
 
         JOptionPane.showMessageDialog(geniusFrame, pontuacaoFinal);
+    }
+
+    public void encerraCampeonato(){
+        int tempoTotalPartida = 0;
+        int totalDeRounds = 0;
+        String estatisticas = ""; //string de estatisticas de cada jogador
+        String vencedor = "";
+        int pontosVencedor = 0;
+
+        for(int i = 0; i < jogadores.size(); i++){
+            estatisticas += jogadores.get(i).getNome() + "\nPontuacao: " + jogadores.get(i).getPontuacao() +
+                    "\nTempo na partida: " + jogadores.get(i).getTempoNaPartida()
+                    + " segundos" + "\nRound em que perdeu: " + (jogadores.get(i).getPontuacao() + 1) + "\n\n";
+
+            if(jogadores.get(i).getPontuacao() > pontosVencedor){
+                pontosVencedor = jogadores.get(i).getPontuacao();
+                vencedor = jogadores.get(i).getNome();
+            }
+
+            //o tempo total de partida é a soma do tempo total de todos os jogadores
+            tempoTotalPartida += jogadores.get(i).getTempoNaPartida();
+            //o numero de rounds jogados por um jogador é igual ao numero de rounds vencidos + 1 (que é onde ele perdeu)
+            totalDeRounds += (jogadores.get(i).getPontuacao() + 1);
+        }
+
+        String geral = ""; //string de informacoes gerais sobre a partida
+        geral += "Vencedor :" + vencedor + "\nNumero de Jogadores: " + jogadores.size() +
+                "\nTempo total de partida: " + tempoTotalPartida + " segundos" + "\nNumero de rounds: " + totalDeRounds;
+
+        JOptionPane.showMessageDialog(geniusFrame, geral);
+        JOptionPane.showMessageDialog(geniusFrame, estatisticas);
+    }
+    
+    public void salvaJogadores(){
+    	try {
+    		FileOutputStream arquivo = new FileOutputStream("genius.save"); //Cria o arquivo
+    		ObjectOutputStream dadosSave = new ObjectOutputStream(arquivo); //Escreve o objeto no arquivo
+    		
+    		dadosSave.writeObject(jogadores);
+    		dadosSave.close();
+    		arquivo.close();
+    		
+    	} catch (Exception ex) {
+    		ex.printStackTrace();
+    		/*
+    		JOptionPane.showMessageDialog(geniusFrame, 
+    				"Erro ao salvar o jogo",
+    				"Erro",
+    				JOptionPane.ERROR_MESSAGE);
+    		*/
+    		System.out.println("Erro ao salvar arquivo.");
+    	}
+    }
+    
+    public void carregaJogadores(){
+    	try {
+    		FileInputStream arquivo = new FileInputStream("genius.save"); 
+    		ObjectInputStream dadosLoad = new ObjectInputStream (arquivo); //Carrega o objeto no arquivo
+    		
+    		jogadores = (ArrayList) dadosLoad.readObject();
+    		dadosLoad.close();
+    		arquivo.close();
+    		
+    	} catch (IOException ioErro) {
+    		System.out.println("Erro ao carregar o save. Inciando jogo...");
+    		ioErro.printStackTrace();
+    		
+    	} catch (ClassNotFoundException clErro) {
+    		System.out.println("Erro de leitura: Classe 'Jogador' não pôde ser carregada");
+    		clErro.printStackTrace();
+    	}
     }
 
     public void montaJogo(){	
@@ -236,6 +365,7 @@ public class Jogo{
             contagem = 0;
             acabou = true;
             liberado = true;
+            jogador.comecarContagemTempo();
 
             while(acabou){
                     //vez do COMPUTADOR
@@ -258,6 +388,7 @@ public class Jogo{
                     		   liberado = true;
                     		   //Se acertou, zera a contagem de botoes apertados e libera o computador para a proxima rodada
                            } else {
+                               jogador.pararContagemTempo();
                         	   JOptionPane.showMessageDialog(geniusFrame,"Game Over!");
                                return;
                            }
