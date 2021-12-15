@@ -85,6 +85,10 @@ public class Jogo{
                 opcoesMenu, 
                 opcoesMenu[0]);
     	
+    	if (selecaoMenu == null) {
+    		selecaoMenu = "Normal";
+    	}
+    	
     	return selecaoMenu;
     }
     
@@ -129,12 +133,16 @@ public class Jogo{
 
     public int setNumeroJogadores() {
         int numJogadores = 0;
-        while(numJogadores <= 0){
-            String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irão jogar?",
-                    "1");
-            numJogadores = Integer.parseInt(numeroJogadoresStr);
+        
+        String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irão jogar?",
+                "1");
+        
+        if (numeroJogadoresStr == null || numeroJogadoresStr.isEmpty()) {
+        	numJogadores = 1;
+        	return numJogadores;
         }
-
+        
+        numJogadores = Integer.parseInt(numeroJogadoresStr);
         return numJogadores;
     }
     
