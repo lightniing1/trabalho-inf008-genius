@@ -155,19 +155,21 @@ public class Jogo{
     }
     
     public String AdicionaJogador() {
-    	Integer NumeroJogador = jogadores.size();
     	String nome = JOptionPane.showInputDialog(geniusFrame, "Qual o seu nome?", "Nome");
     	
-    	if (nome == null || nome.isEmpty() || nome.equals("Nome")) {
-    		nome = "Jogador" + " " + (NumeroJogador + 1);
+    	 if (nome == null || nome.isEmpty() || nome.equals("Nome")) {
+    		nome = "Jogador";
     	}
-    	
-    	if (jogadores.contains(nome)) {
-    		return nome;
-    	} else {
-    		jogadores.add(new Jogador(nome));
-            return nome;
-    	}
+    	 
+    	 for (int i = 0; i < jogadores.size(); i++) {
+    		 if (jogadores.get(i).getNome().equals(nome)) {
+    			 return nome;
+    		 }
+    	 }
+    	 
+    	jogadores.add(new Jogador(nome));
+        return nome;
+    	 
     }
 
     
@@ -226,7 +228,7 @@ public class Jogo{
     		arquivo.close();
     		
     	} catch (Exception ex) {
-    		ex.printStackTrace();
+    		//ex.printStackTrace();
     		/*
     		JOptionPane.showMessageDialog(geniusFrame, 
     				"Erro ao salvar o jogo",
@@ -248,11 +250,11 @@ public class Jogo{
     		
     	} catch (IOException ioErro) {
     		System.out.println("Erro ao carregar o save. Inciando jogo...");
-    		ioErro.printStackTrace();
+    		//ioErro.printStackTrace();
     		
     	} catch (ClassNotFoundException clErro) {
     		System.out.println("Erro de leitura: Classe 'Jogador' não pôde ser carregada");
-    		clErro.printStackTrace();
+    		//clErro.printStackTrace();
     	}
     }
 
