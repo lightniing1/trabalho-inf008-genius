@@ -5,6 +5,9 @@ Repositório destinado para o trabalho da matéria INF008 - Programação Orient
 Membros da equipe:
 
 Daniel Oliveira dos Santos
+
 Joao Victor Rodrigues Bohana
+
 Pedro Canabrava
+
 Luis Carlos Garrido 
