@@ -249,7 +249,7 @@ public class Jogo{
     		arquivo.close();
     		
     	} catch (IOException ioErro) {
-    		System.out.println("Erro ao carregar o save. Inciando jogo...");
+    		System.out.println("Save não encontrado. Inciando jogo...");
     		//ioErro.printStackTrace();
     		
     	} catch (ClassNotFoundException clErro) {
