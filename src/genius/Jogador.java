@@ -47,8 +47,7 @@ public class Jogador implements Serializable {
     public int getPontuacaoMaxima() {
     	if (this.pontuacao > this.pontuacaoMaxima) {
     		this.pontuacaoMaxima = this.pontuacao;
-    	}
-    	
+    	}	
     	return pontuacaoMaxima;
     }
 }

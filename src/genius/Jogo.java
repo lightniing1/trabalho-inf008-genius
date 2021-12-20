@@ -47,7 +47,7 @@ public class Jogo{
         //Pega o numero de jogadores que irao jogar
         int numJogadores = game.setNumeroJogadores();
 
-        //No modo campeonato, o numero mínimo de jogadores é 2
+        //No modo campeonato, o numero mÃ­nimo de jogadores Ã© 2
         if(modoJogo.equals("Campeonato") && numJogadores < 2){
             while(numJogadores < 2){
                 JOptionPane.showMessageDialog(geniusFrame,
@@ -67,7 +67,7 @@ public class Jogo{
         	progressaoDificuldade = true;
         }
         
-        //Player joga até perder. Ao perder, passa a vez.
+        //Player joga atÃ© perder. Ao perder, passa a vez.
         for(int i = 0; i < game.jogadores.size(); i++){
             game.Jogadas(game.jogadores.get(i), nivelDificuldade, progressaoDificuldade);
         }
@@ -104,7 +104,7 @@ public class Jogo{
     	//Verificar se um dicionario pode ser melhor aqui
     	int selecao = 0;
     	int dificuldade = 0;
-    	String[] opcoesMenuDificuldade = {"Progressao", "Fácil", "Médio", "Difícil"};
+    	String[] opcoesMenuDificuldade = {"Progressao", "FÃ¡cil", "MÃ©dio", "DifÃ­cil"};
     	
     	String selecaoMenuDificuldade = (String) JOptionPane.showInputDialog(geniusFrame,
     			"Selecione a dificuldade",
@@ -142,7 +142,7 @@ public class Jogo{
     public int setNumeroJogadores() {
         int numJogadores = 0;
         
-        String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irão jogar?",
+        String numeroJogadoresStr = JOptionPane.showInputDialog(geniusFrame, "Quantos jogadores irÃ£o jogar?",
                 "1");
         
         if (numeroJogadoresStr == null || numeroJogadoresStr.isEmpty()) {
@@ -180,7 +180,7 @@ public class Jogo{
         	if (jogadores.get(i).getNome().equals(nomeJogador)) {
 	            pontuacaoFinal += jogadores.get(i).getNome() + 
 	            				"\nPontuacao: " + jogadores.get(i).getPontuacao() +
-	            				"\nPontuacao máxima: " + jogadores.get(i).getPontuacaoMaxima() + "\n\n";
+	            				"\nPontuacao mÃ¡xima: " + jogadores.get(i).getPontuacaoMaxima() + "\n\n";
         	}
         }
 
@@ -204,9 +204,9 @@ public class Jogo{
                 vencedor = jogadores.get(i).getNome();
             }
 
-            //o tempo total de partida é a soma do tempo total de todos os jogadores
+            //o tempo total de partida Ã© a soma do tempo total de todos os jogadores
             tempoTotalPartida += jogadores.get(i).getTempoNaPartida();
-            //o numero de rounds jogados por um jogador é igual ao numero de rounds vencidos + 1 (que é onde ele perdeu)
+            //o numero de rounds jogados por um jogador Ã© igual ao numero de rounds vencidos + 1 (que Ã© onde ele perdeu)
             totalDeRounds += (jogadores.get(i).getPontuacao() + 1);
         }
 
@@ -249,11 +249,11 @@ public class Jogo{
     		arquivo.close();
     		
     	} catch (IOException ioErro) {
-    		System.out.println("Save não encontrado. Inciando jogo...");
+    		System.out.println("Save nÃ£o encontrado. Inciando jogo...");
     		//ioErro.printStackTrace();
     		
     	} catch (ClassNotFoundException clErro) {
-    		System.out.println("Erro de leitura: Classe 'Jogador' não pôde ser carregada");
+    		System.out.println("Erro de leitura: Classe 'Jogador' nÃ£o pÃ´de ser carregada");
     		//clErro.printStackTrace();
     	}
     }
@@ -374,7 +374,7 @@ public class Jogo{
                     if (liberado == true){//Se o computador estiver liiberado , faz sua jogada
                             geniusFrame.setTitle("Aguarde....");
                             try {
-                            	Thread.sleep(1000); //Espera 1 segundo antes do computador iniciar a rodada. Necessario devido a velocidade dos botões aumentar a dificuldade
+                            	Thread.sleep(1000); //Espera 1 segundo antes do computador iniciar a rodada. Necessario devido a velocidade dos botÃµes aumentar a dificuldade
                             } catch (InterruptedException e){}
                             escolhaPC(nivelDificuldade);
                             indice1 = indice1 + 1;//incrementa a posicao para a proxima rodada    
